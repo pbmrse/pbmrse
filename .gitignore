@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.open-next/
+.wrangler/
+artifacts/
+cache/
+coverage/
+typechain-types/
+*.tsbuildinfo
+.DS_Store
+.env*
+!.env.example
+*.pem
+*.key

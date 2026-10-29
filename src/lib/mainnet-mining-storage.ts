@@ -1,0 +1,20 @@
+// Chain-56 settlement SQL reuses the validated reward calculation engine.
+// Keep chain-97 storage untouched.
+export const GUARD_MINING_BATCH=`INSERT INTO mining_settlement_batches(batch_id,source_wallet,from_at,to_at,guard_ok) VALUES (?,?,?,?,CASE WHEN (SELECT revision FROM mining_state WHERE singleton=1)=? AND NOT EXISTS(SELECT 1 FROM json_each(?) e LEFT JOIN business_positions p ON p.wallet_address=json_extract(e.value,'$.wallet') AND p.chain_id=56 WHERE p.wallet_address IS NULL OR p.version<>json_extract(e.value,'$.version')) THEN 1 ELSE 0 END)`;
+
+export const UPDATE_MINING_POSITION=`UPDATE business_positions SET position_json=?,updated_at=?,version=version+1,last_operation_id=? WHERE wallet_address=? AND chain_id=56 AND version=? AND EXISTS(SELECT 1 FROM mining_settlement_batches WHERE batch_id=? AND guard_ok=1)`;
+
+export const INSERT_MINING_REWARD=`INSERT INTO business_rewards(reward_id,batch_id,wallet_address,source_wallet,kind,generation,rate_bps,requested_atomic,amount_atomic,from_at,to_at,created_at) SELECT ?,?,?,?,?,?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM mining_settlement_batches WHERE batch_id=? AND guard_ok=1)`;
+
+
+export const UPSERT_MINING_REMAINDER=`INSERT INTO mining_reward_remainders(source_wallet,recipient_wallet,kind,remainder_atomic) SELECT ?,?,?,? WHERE EXISTS(SELECT 1 FROM mining_settlement_batches WHERE batch_id=? AND guard_ok=1) ON CONFLICT(source_wallet,recipient_wallet,kind) DO UPDATE SET remainder_atomic=excluded.remainder_atomic`;
+
+
+export const MAINNET_TRACK_MINING_PAYMENT = `UPDATE mining_purchase_intents SET tx_hash=? WHERE intent_id=? AND wallet_address=? AND status='PREPARED' AND (tx_hash IS NULL OR lower(tx_hash)=lower(?))`;
+
+export const MAINNET_APPLY_MINING_PURCHASE = `UPDATE business_positions SET position_json=?,version=version+1,updated_at=?,last_operation_id=? WHERE wallet_address=? AND chain_id=56 AND version=? AND (last_operation_id IS NULL OR last_operation_id<>?) AND EXISTS(SELECT 1 FROM mining_purchase_intents WHERE intent_id=? AND wallet_address=business_positions.wallet_address AND status='PREPARED' AND lower(tx_hash)=lower(?) AND COALESCE(lower(referral_wallet),'')=?) AND EXISTS(SELECT 1 FROM wallet_referrals WHERE wallet_address=business_positions.wallet_address AND COALESCE(lower(parent_wallet),'')=?) AND NOT EXISTS(SELECT 1 FROM mining_purchase_intents other WHERE lower(other.tx_hash)=lower(?) AND other.intent_id<>?)`;
+export const MAINNET_CONFIRM_MINING_INTENT = `UPDATE mining_purchase_intents SET status='CONFIRMED',tx_hash=?,confirmed_at=? WHERE intent_id=? AND status='PREPARED' AND lower(tx_hash)=lower(?) AND wallet_address=? AND EXISTS(SELECT 1 FROM business_positions WHERE wallet_address=mining_purchase_intents.wallet_address AND chain_id=56 AND last_operation_id=?) AND NOT EXISTS(SELECT 1 FROM business_operations WHERE operation_id=mining_purchase_intents.intent_id)`;
+
+export const MAINNET_RECORD_MINING_PURCHASE = `INSERT INTO business_operations(operation_id,wallet_address,chain_id,operation_type,amount_atomic,asset,status,created_at,tx_hash,details_json) SELECT intent_id,wallet_address,56,'MINING_PURCHASE',amount_atomic,'PGR','CONFIRMED',confirmed_at,tx_hash,? FROM mining_purchase_intents WHERE intent_id=? AND status='CONFIRMED' AND EXISTS(SELECT 1 FROM business_positions WHERE wallet_address=mining_purchase_intents.wallet_address AND chain_id=56 AND last_operation_id=mining_purchase_intents.intent_id) ON CONFLICT DO NOTHING`;
+export const MAINNET_REGISTER_MINER = `INSERT INTO mining_registry(wallet_address,registered_at) SELECT wallet_address,confirmed_at FROM mining_purchase_intents WHERE intent_id=? AND status='CONFIRMED' AND EXISTS(SELECT 1 FROM business_operations WHERE operation_id=mining_purchase_intents.intent_id AND chain_id=56 AND status='CONFIRMED') ON CONFLICT DO NOTHING`;
+export const MAINNET_ADVANCE_MINING_REVISION = `UPDATE mining_state SET revision=revision+1 WHERE singleton=1 AND EXISTS(SELECT 1 FROM business_positions WHERE wallet_address=? AND chain_id=56 AND last_operation_id=?)`;

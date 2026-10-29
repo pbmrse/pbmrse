@@ -1,0 +1,2 @@
+export const INSERT_BANK_DEPOSIT=`INSERT INTO bank_deposits(wallet_address,chain_id,tx_hash,deposit_address,amount_atomic,block_number,confirmed_at) VALUES (?,97,?,?,?,?,?) ON CONFLICT(wallet_address,chain_id,tx_hash) DO NOTHING`;
+export const CREDIT_BANK_DEPOSIT=`INSERT INTO wallet_ledger(wallet_address,chain_id,asset,amount_atomic,entry_type,source_key,created_at) SELECT wallet_address,97,'USDT',amount_atomic,'DEPOSIT',?,confirmed_at FROM bank_deposits WHERE wallet_address=? AND chain_id=97 AND tx_hash=? ON CONFLICT(source_key) DO NOTHING`;

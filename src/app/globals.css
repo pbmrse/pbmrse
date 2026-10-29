@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --pbm-bg: #020617;
+  --pbm-panel: rgba(5, 15, 38, .78);
+  --pbm-border: rgba(37, 128, 255, .28);
+  --pbm-blue: #1da1ff;
+  --pbm-cyan: #36d9ff;
+  --pbm-purple: #7c3cff;
+}
+
+html, body { margin: 0; min-width: 320px; }
+body {
+  background:
+    radial-gradient(circle at 72% 8%, rgba(29,161,255,.13), transparent 28rem),
+    radial-gradient(circle at 18% 70%, rgba(124,60,255,.10), transparent 32rem),
+    #020617;
+  color: #f5f7fb;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+* { box-sizing: border-box; }
+button, a, input { -webkit-tap-highlight-color: transparent; }
+
+.pbm-shell {
+  min-height: 100vh;
+  background-image:
+    linear-gradient(rgba(37,99,235,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.pbm-panel {
+  border: 1px solid var(--pbm-border);
+  background: linear-gradient(145deg, rgba(8,22,52,.88), rgba(2,9,27,.82));
+  border-radius: 18px;
+  box-shadow: inset 0 1px rgba(255,255,255,.035), 0 16px 50px rgba(0,0,0,.22);
+  min-width: 0;
+}
+.pbm-panel-hover { transition: transform .22s cubic-bezier(.2,.8,.2,1), border-color .22s ease, box-shadow .22s ease, background-color .22s ease; }
+.pbm-interactive { will-change: transform; }
+.pbm-btn, .btn, button, a { transition: transform .18s cubic-bezier(.2,.8,.2,1), filter .18s ease, background-color .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease; }
+.pbm-btn:active, .btn:active, button:active { transform: scale(.97); }
+.pbm-page-enter { animation: pbm-page-enter .32s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes pbm-page-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .pbm-page-enter { animation: none; } .pbm-panel-hover, .pbm-btn, .btn, button, a { transition: none !important; } }
+.pbm-panel-hover:hover {
+  border-color: rgba(54,217,255,.5);
+  transform: translateY(-2px);
+  box-shadow: 0 18px 55px rgba(0,112,255,.12);
+}
+.pbm-glow {
+  background:
+    radial-gradient(circle at 75% 45%, rgba(29,161,255,.23), transparent 18rem),
+    radial-gradient(circle at 86% 72%, rgba(124,60,255,.28), transparent 15rem),
+    linear-gradient(135deg, #03112c, #020617 65%);
+}
+.pbm-grid-glow {
+  background-image:
+    linear-gradient(rgba(29,161,255,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29,161,255,.06) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.pbm-ring {
+  border: 1px solid rgba(54,217,255,.25);
+  box-shadow: 0 0 50px rgba(29,161,255,.12), inset 0 0 30px rgba(124,60,255,.08);
+}
+.pbm-gradient-text {
+  background: linear-gradient(90deg, #42d8ff, #a5cfff 50%, #9d68ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.pbm-btn {
+  border-radius: 11px;
+  padding: 11px 17px;
+  font-weight: 700;
+  transition: .2s ease;
+}
+.pbm-btn-primary {
+  color: white;
+  background: linear-gradient(100deg, #0e9cff, #5d45ff);
+  box-shadow: 0 8px 26px rgba(29,161,255,.2);
+}
+.pbm-btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.pbm-btn-primary:active { transform: translateY(0) scale(.97); }
+.pbm-btn-secondary:active { transform: scale(.97); }
+.pbm-btn-secondary {
+  border: 1px solid rgba(54,217,255,.32);
+  background: rgba(7,22,49,.65);
+  color: #c9efff;
+}
+.pbm-btn-secondary:hover { background: rgba(16,45,88,.75); }
+
+.card {
+  border: 1px solid #17345e;
+  background: linear-gradient(145deg, rgba(7,21,48,.82), rgba(4,12,29,.82));
+  border-radius: 16px;
+  padding: 20px;
+  min-width: 0;
+}
+.btn {
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-primary { background: linear-gradient(100deg,#0e9cff,#6d3fff); color: white; }
+.btn-secondary { background: #0d1b35; color: #dce3ef; }
+.input { transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+  width: 100%;
+  max-width: 100%;
+  background: #040b1c;
+  border: 1px solid #1b3b68;
+  border-radius: 10px;
+  padding: 12px;
+  color: white;
+}
+.input:focus { outline: none; border-color: rgba(54,217,255,.65); box-shadow: 0 0 0 3px rgba(54,217,255,.08), 0 0 24px rgba(29,161,255,.08); }
+@media (max-width: 1023px) {
+  .pbm-shell { padding-bottom: 78px; }
+}
+@media (max-width: 639px) {
+  .card, .pbm-panel { padding: 16px; border-radius: 14px; }
+  .btn, .pbm-btn { padding: 9px 13px; }
+}
