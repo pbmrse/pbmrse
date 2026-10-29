@@ -46,9 +46,9 @@ export function useSiteSwap(snapshot:BusinessSnapshot|undefined,onUpdate:(data:B
    localStorage.setItem(key,JSON.stringify(saved));if(!same())return;
    setStatus(localizedPair(language,'等待代币确认','Waiting for token confirmation'));
    const receipt=await client.waitForTransactionReceipt({hash:saved.hash,confirmations:1,timeout:180000});if(receipt.status!=='success')throw new Error(localizedPair(language,'代币转账失败','Token transfer failed'));if(!same())return;
-   // Register the mined hash through the existing HMAC-protected read session.
+   // Register the mined hash through the public integration endpoint.
    // This is automatic and causes no second wallet signature or user action.
-   // The backend owns the remaining 12-confirmation and payout lifecycle.
+   // The independently secured service owns confirmation and settlement.
    const registered=await register();if(!same())return;onUpdate(registered.snapshot);localStorage.removeItem(key);
    setStatus(localizedPair(language,'等待代币确认','Waiting for token confirmation'));
   }catch(e){if(same())setError(e instanceof Error?e.message:'Swap unavailable');}

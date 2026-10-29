@@ -1,6 +1,6 @@
 # PBMReserves DApp
 
-PBMReserves is a standalone Web3 application for BNB Smart Chain. The public source includes the user-facing DApp, wallet connectivity, staking, mining reserve, PGR/SOV reward, swap interfaces, public API handlers, database schema snapshot, and token contracts.
+PBMReserves is a standalone Web3 interface for BNB Smart Chain. This repository contains the user-facing DApp, wallet connectivity, staking, mining reserve, PGR/SOV reward and swap interfaces, public market/news adapters, and public token contracts.
 
 ## Live applications
 
@@ -22,7 +22,6 @@ PBMReserves is a standalone Web3 application for BNB Smart Chain. The public sou
 - Next.js 15 and React 18
 - TypeScript
 - Wagmi, Viem, and Reown AppKit
-- Cloudflare-compatible server handlers and D1 schema
 - Solidity token contracts based on OpenZeppelin Contracts 5.6.1
 
 ## Local development
@@ -37,7 +36,13 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-The public repository contains no production credentials, provider accounts, private keys, database identifiers, or encrypted secrets. Set your own Reown project ID and deployment-specific runtime bindings before enabling wallet or server operations.
+Set your own Reown project ID and public deployment addresses before running wallet interactions.
+
+## Public-source boundary
+
+Like established open-source DApp interfaces, this repository publishes the application UI, wallet interaction clients, public ABIs/contracts, localization, styling, and reproducible build configuration. Production administration, financial service implementations, signer services, custody recovery tooling, databases, operational automation, credentials, and deployment bindings are intentionally excluded.
+
+The client source documents the public request/response integration points used by the interface. A production operator must supply independently secured services for any state-changing action.
 
 ## Checks
 
@@ -56,7 +61,7 @@ Single-file verification sources and standard JSON inputs are available in [`con
 
 ## Security
 
-Never commit private keys, seed phrases, account tokens, database IDs, or production environment files. See [`SECURITY.md`](./SECURITY.md).
+Never commit credentials, account tokens, production identifiers, or production environment files. See [`SECURITY.md`](./SECURITY.md).
 
 ## License
 

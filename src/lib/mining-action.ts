@@ -1,5 +1,9 @@
-import {isAddress,isHash,keccak256,toBytes,type Address,type Hash} from 'viem';
-import {parseAmount} from './business-engine.ts';
+import {isAddress,isHash,keccak256,parseUnits,toBytes,type Address,type Hash} from 'viem';
+
+function parseAmount(value:string){
+ if(!/^\d{1,30}(\.\d{1,18})?$/.test(value.trim()))throw new Error('Invalid asset amount');
+ const amount=parseUnits(value.trim(),18);if(amount<=0n)throw new Error('Amount must be positive');return amount;
+}
 export type MiningAction={kind:'PREPARE_MINING'|'CONFIRM_MINING';id:string;amount:string;referrerWallet?:string|null;txHash?:Hash};
 export function normalizeMiningAction(value:unknown){
  if(!value||typeof value!=='object')throw new Error('Invalid mining request');
